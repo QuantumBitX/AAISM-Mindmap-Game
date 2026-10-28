@@ -1,0 +1,2069 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>AAISM Map Drill</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: an auditor's workpaper. Each mind map is a ledger sheet with a red double margin;
+   terms are slips filed onto its branches from a slip tray docked at the bottom of the screen. */
+:root {
+  --paper: #E8EEE4;        /* columnar-pad green */
+  --sheet: #F8FAF5;        /* the working sheet */
+  --ink: #16202A;          /* navy-black ink */
+  --muted: #536158;
+  --rule: #C6D0C1;
+  --branch: #91A194;
+  --hover: rgba(22, 32, 42, .06);
+  --pencil: #2947C6;       /* blue pencil: selection, placed terms, ticks */
+  --pencil-soft: #DEE5FB;
+  --miss: #BC3D29;         /* vermilion: misses */
+  --miss-soft: #F8DDD6;
+  --margin: #DB9387;       /* ledger margin rule */
+  --tab: #16202A;
+  --tab-ink: #F8FAF5;
+  --tray: #16202A;
+  --tray-line: #3A4652;
+  --tray-ink: #E8EEE4;
+  --tray-muted: #9AADA4;
+  --tray-accent: #A8BBFF;
+  --chip: #F8FAF5;
+  --chip-ink: #16202A;
+  --chip-muted: #536158;
+  --chip-line: transparent;
+  --shade: rgba(22, 32, 42, .3);
+  --scrim: rgba(14, 20, 22, .5);
+  --font-display: "Archivo", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif;
+  --font-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0E1416; --sheet: #141C1F; --ink: #E0E8DF; --muted: #96A59D; --rule: #29353A; --branch: #4F605B;
+    --hover: rgba(224, 232, 223, .07); --pencil: #97ABFF; --pencil-soft: #212C55; --miss: #FF8C75; --miss-soft: #44221C;
+    --margin: #7A423A; --tab: #E0E8DF; --tab-ink: #0E1416; --tray: #080C0D; --tray-line: #2A3539; --tray-ink: #E0E8DF;
+    --tray-muted: #8698A0; --tray-accent: #A8BBFF; --chip: #1C262A; --chip-ink: #E6EDE5; --chip-muted: #98A79F;
+    --chip-line: #33414A; --shade: rgba(0, 0, 0, .55); --scrim: rgba(0, 0, 0, .62);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0E1416; --sheet: #141C1F; --ink: #E0E8DF; --muted: #96A59D; --rule: #29353A; --branch: #4F605B;
+  --hover: rgba(224, 232, 223, .07); --pencil: #97ABFF; --pencil-soft: #212C55; --miss: #FF8C75; --miss-soft: #44221C;
+  --margin: #7A423A; --tab: #E0E8DF; --tab-ink: #0E1416; --tray: #080C0D; --tray-line: #2A3539; --tray-ink: #E0E8DF;
+  --tray-muted: #8698A0; --tray-accent: #A8BBFF; --chip: #1C262A; --chip-ink: #E6EDE5; --chip-muted: #98A79F;
+  --chip-line: #33414A; --shade: rgba(0, 0, 0, .55); --scrim: rgba(0, 0, 0, .62);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { height: 100%; background: var(--paper); }
+html.in-play { background: var(--tray); }
+body {
+  height: 100%; margin: 0; overflow: hidden;
+  background: var(--paper); color: var(--ink);
+  font: 400 15px/1.45 var(--font-body);
+  -webkit-text-size-adjust: 100%;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--paper); pointer-events: none;
+}
+button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid var(--pencil); outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+#app { height: 100%; display: flex; flex-direction: column; }
+.screen { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.scroll { flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; }
+.gut { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { width: 100%; max-width: 1120px; margin-inline: auto; }
+
+/* ---------- shared bits ---------- */
+.eyebrow, .label {
+  margin: 0; font: 600 12px/1.3 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+}
+.btn {
+  appearance: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 40px; padding: 8px 16px; border: 1.5px solid var(--ink); border-radius: 6px;
+  background: transparent; color: var(--ink); font: 700 14px/1 var(--font-body); cursor: pointer; white-space: nowrap;
+}
+.btn:hover { background: var(--hover); }
+.btn.primary { background: var(--pencil); border-color: var(--pencil); color: var(--sheet); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.quiet { border-color: transparent; text-decoration: underline; text-underline-offset: 3px; }
+.tick { width: 18px; height: 15px; fill: none; stroke: var(--branch); stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
+.tick.on { stroke: var(--pencil); }
+
+/* ---------- home ---------- */
+.home { padding-block: 26px 48px; display: grid; gap: 30px; }
+.hero { display: grid; gap: 22px; }
+@media (min-width: 860px) { .hero { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: end; gap: 44px; } }
+.masthead { display: grid; gap: 12px; }
+h1 {
+  margin: 0; font: 800 clamp(3.4rem, 16vw, 6.4rem)/.84 var(--font-display); font-stretch: 66%;
+  letter-spacing: -.01em; text-wrap: balance;
+}
+h1:focus { outline: none; }
+.lede { margin: 0; max-width: 34rem; font-size: 1.06rem; line-height: 1.5; }
+.demo { margin: 0; pointer-events: none; }
+.sheet.mini { margin: 0; max-width: 25rem; padding: 14px 16px 16px 34px; }
+.sheet.mini .slot { width: 9.5rem; }
+.demo-chip {
+  position: absolute; right: 16px; bottom: 30px; transform: rotate(-4deg);
+  outline: 2px solid var(--pencil); box-shadow: 0 14px 24px -10px var(--shade);
+}
+
+.levels { display: grid; gap: 10px; }
+.seg {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 28rem;
+  border: 1.5px solid var(--ink); border-radius: 7px; overflow: hidden;
+}
+.seg button {
+  appearance: none; border: 0; min-height: 46px; padding: 8px; background: var(--sheet); color: var(--ink);
+  font: 700 15px/1.1 var(--font-body); cursor: pointer;
+}
+.seg button + button { border-left: 1.5px solid var(--ink); }
+.seg button[aria-checked="true"] { background: var(--ink); color: var(--sheet); }
+.seg button:focus-visible { outline-offset: -5px; }
+.level-note { margin: 0; color: var(--muted); max-width: 36rem; }
+.tally { margin: 0; font: 500 13px/1.5 var(--font-mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+
+.domains { display: grid; gap: 36px; max-width: 60rem; }
+.domain-head { display: flex; align-items: baseline; gap: 12px; padding-bottom: 10px; border-bottom: 2px solid var(--ink); }
+.dnum { font: 800 2.5rem/.8 var(--font-display); font-stretch: 66%; color: var(--pencil); }
+.domain-head h2 { margin: 0; font: 700 1.4rem/1.1 var(--font-display); font-stretch: 80%; text-wrap: balance; }
+.domain-head .count { margin-left: auto; font: 500 12px/1 var(--font-mono); color: var(--muted); white-space: nowrap; }
+.maplist { list-style: none; margin: 0; padding: 0; }
+.maprow {
+  display: grid; grid-template-columns: 2.7rem minmax(0, 1fr) auto;
+  grid-template-areas: "ref info ticks" "ref act act";
+  column-gap: 10px; row-gap: 10px; padding-block: 14px; border-bottom: 1px solid var(--rule); align-items: start;
+}
+.maprow .ref { grid-area: ref; font: 600 13px/1.65 var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.mapinfo { grid-area: info; min-width: 0; }
+.mapinfo h3 { margin: 0; font: 700 1.05rem/1.25 var(--font-body); text-wrap: balance; }
+.meta { margin: 3px 0 0; font: 500 12px/1.4 var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.maprow .ticks { grid-area: ticks; display: inline-flex; gap: 1px; padding-top: 3px; }
+.maprow .act { grid-area: act; display: flex; gap: 8px; justify-content: flex-end; }
+@media (min-width: 760px) {
+  .maprow { grid-template-columns: 3rem minmax(0, 1fr) auto auto; grid-template-areas: "ref info ticks act"; align-items: center; }
+  .maprow .ref { line-height: 1.2; }
+}
+.home-foot { display: grid; gap: 6px; max-width: 42rem; font-size: 13px; color: var(--muted); }
+.home-foot p { margin: 0; }
+
+/* ---------- top bars ---------- */
+.bar { flex: none; position: relative; z-index: 2; background: var(--paper); border-bottom: 1px solid var(--rule); }
+.bar-in { display: flex; align-items: center; gap: 10px; padding-top: 10px; }
+.bar.plain .bar-in { padding-bottom: 10px; }
+.iconbtn {
+  appearance: none; flex: none; width: 40px; height: 40px; display: grid; place-items: center;
+  border: 1.5px solid var(--rule); border-radius: 50%; background: var(--sheet); color: var(--ink); cursor: pointer;
+}
+.iconbtn:hover { border-color: var(--ink); }
+.iconbtn svg, .tbtn svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.iconbtn svg { width: 18px; height: 18px; }
+.bar-title { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.bar-title .ref { font: 600 11.5px/1.2 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.bar-title h2 {
+  margin: 0; font: 700 1.22rem/1.08 var(--font-display); font-stretch: 80%;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.bar-title h2:focus { outline: none; }
+.bar-stats {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; padding-block: 8px 10px;
+  font: 500 12.5px/1.2 var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums;
+}
+.pill {
+  padding: 4px 8px 3px; border-radius: 999px; background: var(--ink); color: var(--sheet);
+  font: 600 10.5px/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase;
+}
+.misses.has { color: var(--miss); }
+.meter { height: 3px; background: var(--rule); }
+.meter span { display: block; height: 100%; width: 0; background: var(--pencil); transition: width .35s ease; }
+
+/* ---------- the sheet and its tree ---------- */
+.board { background: var(--paper); }
+.sheet {
+  position: relative; margin-block: 14px 32px; padding: 16px 14px 26px 30px;
+  background: var(--sheet); border: 1px solid var(--rule); border-radius: 3px;
+}
+.sheet::before {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 11px; width: 5px;
+  border-left: 1px solid var(--margin); border-right: 1px solid var(--margin); pointer-events: none;
+}
+@media (min-width: 720px) {
+  .sheet { padding: 22px 28px 34px 54px; }
+  .sheet::before { left: 22px; }
+}
+.sheet-head { display: grid; gap: 4px; margin-bottom: 18px; }
+.sheet-head .wp { margin: 0; font: 600 11.5px/1.3 var(--font-mono); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+.tagline { margin: 0; max-width: 42rem; font-style: italic; color: var(--muted); }
+
+.tree { display: grid; gap: 20px; }
+.sec { min-width: 0; }
+.row { display: flex; align-items: center; gap: 8px; min-height: 44px; padding-block: 4px; }
+.tab, .lbl { display: inline-flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; }
+.lt { display: grid; min-width: 0; }
+.lt small { font-size: 12px; line-height: 1.25; font-weight: 400; color: var(--muted); }
+.tab {
+  min-height: 38px; padding: 6px 12px; border-radius: 3px; background: var(--tab); color: var(--tab-ink);
+  font: 700 1.1rem/1.12 var(--font-display); font-stretch: 82%;
+}
+.tab .lt small { color: inherit; opacity: .78; font-family: var(--font-body); }
+.tab.placed { background: var(--pencil); color: var(--sheet); }
+.lbl { line-height: 1.3; overflow-wrap: anywhere; }
+.row.br > .lbl { font-weight: 700; }
+.lbl.placed { color: var(--pencil); }
+.lbl.placed small { color: var(--pencil); opacity: .8; }
+.tk { flex: none; width: 17px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.fresh { animation: settle .4s ease-out; }
+.fresh .tk path { stroke-dasharray: 32; animation: draw .45s ease-out .05s both; }
+.num {
+  flex: none; display: grid; place-items: center; width: 22px; height: 22px; border: 1.5px solid var(--branch);
+  border-radius: 50%; font: 600 11px/1 var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums;
+}
+.kids { list-style: none; margin: 0 0 0 8px; padding: 0; }
+.kids > li { position: relative; padding-left: 13px; }
+.kids > li::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; border-left: 1.5px solid var(--branch); }
+.kids > li:last-child::before { bottom: auto; height: 22px; }
+.kids > li::after { content: ""; position: absolute; left: 0; top: 22px; width: 9px; border-top: 1.5px solid var(--branch); }
+@media (min-width: 720px) {
+  .kids { margin-left: 12px; }
+  .kids > li { padding-left: 18px; }
+  .kids > li::after { width: 13px; }
+}
+@media (min-width: 900px) {
+  .tree.multi { grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 26px 40px; align-items: start; }
+  .tree.single > .sec > .kids { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 4px 34px; align-items: start; }
+  .tree.single > .sec > .kids > li::before { bottom: auto; height: 22px; }
+}
+.note {
+  margin: 2px 0 8px; padding: 8px 10px; max-width: 30rem; border-left: 3px solid var(--margin);
+  background: var(--paper); border-radius: 0 4px 4px 0; font-size: 13px; line-height: 1.4; color: var(--muted);
+}
+
+/* empty spots */
+.slot {
+  appearance: none; flex: 0 1 auto; width: min(12.5rem, 100%); height: 36px; padding: 0 10px;
+  border: 1.5px dashed var(--branch); border-radius: 6px; background: transparent; cursor: pointer;
+  transition: background-color .15s, border-color .15s, box-shadow .15s;
+}
+.row.br > .slot { border-color: var(--ink); }
+.slot.tabslot { width: min(15rem, 100%); height: 38px; border-color: var(--ink); border-radius: 3px; }
+.arming .slot, .dragging .slot { border-color: var(--pencil); background: var(--pencil-soft); }
+@media (hover: hover) { .arming .slot:hover { border-style: solid; } }
+.slot.over { border-style: solid; border-color: var(--pencil); background: var(--pencil-soft); box-shadow: 0 0 0 3px var(--pencil-soft); }
+.slot.hinted { border: 2px solid var(--pencil); animation: hint 1s ease-in-out 3; }
+.slot.missed { border-style: solid; border-color: var(--miss); background: var(--miss-soft); animation: shake .38s; }
+
+/* ---------- the tray ---------- */
+.tray { flex: none; position: relative; z-index: 3; background: var(--tray); color: var(--tray-ink); box-shadow: 0 -10px 24px -14px var(--shade); }
+.tray-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 10px; }
+.left { font: 600 12.5px/1.2 var(--font-mono); letter-spacing: .04em; color: var(--tray-muted); font-variant-numeric: tabular-nums; }
+.tray-tools { display: flex; gap: 6px; }
+.tbtn {
+  appearance: none; display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 6px 11px;
+  border: 1px solid var(--tray-line); border-radius: 6px; background: transparent; color: var(--tray-ink);
+  font: 700 13.5px/1 var(--font-body); cursor: pointer;
+}
+.tbtn svg { width: 16px; height: 16px; }
+.tbtn:hover { border-color: var(--tray-muted); }
+.tbtn:disabled { opacity: .45; cursor: default; }
+.tray :focus-visible { outline-color: var(--tray-accent); }
+.hand { display: flex; flex-wrap: wrap; gap: 8px; padding-block: 10px 14px; min-height: 66px; align-content: flex-start; }
+.hand-empty { margin: 0; align-self: center; color: var(--tray-muted); }
+.chip {
+  appearance: none; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  display: inline-flex; flex-direction: column; justify-content: center; max-width: 100%; min-height: 42px;
+  padding: 8px 12px; border: 1px solid var(--chip-line); border-radius: 4px; background: var(--chip); color: var(--chip-ink);
+  font: 700 15px/1.2 var(--font-body); text-align: left; cursor: grab;
+  box-shadow: 0 1px 0 var(--shade), 0 4px 10px -6px var(--shade); transition: transform .12s ease, opacity .12s ease;
+}
+.chip .lt small { color: var(--chip-muted); }
+@media (hover: hover) { .hand .chip:hover { transform: translateY(-1px); } }
+.chip[aria-pressed="true"] { outline: 2.5px solid var(--tray-accent); outline-offset: 2px; transform: translateY(-3px); }
+.chip.lifted { opacity: .28; }
+.chip.shake { animation: shake .38s; }
+.chip.dealt { animation: deal .28s ease-out; }
+.ghost {
+  position: fixed; left: 0; top: 0; z-index: 60; margin: 0; pointer-events: none; cursor: grabbing;
+  outline: 2px solid var(--pencil); box-shadow: 0 18px 30px -12px var(--shade);
+}
+.toast {
+  position: absolute; left: 50%; bottom: calc(100% + 10px); transform: translateX(-50%);
+  width: max-content; max-width: min(92vw, 30rem); padding: 9px 14px; border-radius: 8px;
+  background: var(--ink); color: var(--sheet); font-size: 14px; line-height: 1.35; text-align: center;
+  box-shadow: 0 10px 24px -12px var(--shade); pointer-events: none;
+}
+
+/* ---------- study footer ---------- */
+.studybar { flex: none; background: var(--paper); border-top: 1px solid var(--rule); }
+.studybar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 10px 12px; }
+.study-hint { color: var(--muted); font-size: 14px; }
+
+/* ---------- finished sheet ---------- */
+.overlay {
+  position: fixed; inset: 0; z-index: 70; display: grid; align-items: end; justify-items: center;
+  background: var(--scrim); padding-top: max(12px, env(safe-area-inset-top, 0px));
+}
+.donecard {
+  position: relative; width: 100%; max-width: 34rem; max-height: 100%; overflow-y: auto;
+  display: grid; gap: 16px; background: var(--sheet); color: var(--ink); border-radius: 14px 14px 0 0;
+  padding: 24px max(20px, env(safe-area-inset-right, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px));
+  box-shadow: 0 -20px 40px -20px var(--shade);
+}
+@media (min-width: 640px) {
+  .overlay { align-items: center; padding: 24px; }
+  .donecard { border-radius: 10px; padding: 28px 30px; }
+}
+.donecard h2 { margin: 0; padding-right: 7.5rem; font: 700 1.6rem/1.05 var(--font-display); font-stretch: 78%; text-wrap: balance; }
+.donecard h2:focus { outline: none; }
+.stamp {
+  position: absolute; top: 20px; right: 18px; display: grid; justify-items: center; gap: 2px;
+  padding: 6px 10px 5px; border: 2.5px solid var(--pencil); border-radius: 6px; color: var(--pencil);
+  font: 800 1.35rem/1 var(--font-display); font-stretch: 68%; letter-spacing: .1em; text-transform: uppercase;
+  transform: rotate(-7deg);
+}
+.stamp small { font: 600 10px/1.2 var(--font-mono); letter-spacing: .06em; }
+.stamp.thunk { animation: thunk .5s cubic-bezier(.2, .9, .3, 1.25) both; }
+.bigticks { display: flex; gap: 4px; }
+.bigticks .tick { width: 42px; height: 34px; stroke-width: 3; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 0; }
+.stats div { border-top: 2px solid var(--ink); padding-top: 6px; }
+.stats dt { font: 600 10.5px/1.2 var(--font-mono); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+.stats dd { margin: 5px 0 0; font: 800 1.7rem/1 var(--font-display); font-stretch: 74%; font-variant-numeric: tabular-nums; }
+@media (max-width: 380px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.best { margin: 0; font-weight: 700; }
+.review h3 { margin: 0 0 8px; font: 700 1rem/1.2 var(--font-body); }
+.review ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.review li { display: grid; gap: 2px; padding: 8px 10px; border-left: 3px solid var(--miss); background: var(--paper); border-radius: 0 4px 4px 0; }
+.review li span { font-size: 13px; color: var(--muted); }
+.review .clean { margin: 0; color: var(--muted); }
+.done-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+@keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(2px); } }
+@keyframes hint { 0%, 100% { background: transparent; } 50% { background: var(--pencil-soft); } }
+@keyframes draw { from { stroke-dashoffset: 32; } to { stroke-dashoffset: 0; } }
+@keyframes settle { from { transform: translateY(-4px) scale(1.04); } to { transform: none; } }
+@keyframes deal { from { transform: translateY(10px); opacity: .2; } to { transform: none; opacity: 1; } }
+@keyframes thunk { from { transform: rotate(-14deg) scale(1.9); opacity: 0; } 60% { opacity: 1; } to { transform: rotate(-7deg) scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+</style>
+
+<div id="app">
+  <section id="home" class="screen" aria-labelledby="homeTitle">
+    <div class="scroll" id="homeScroll">
+      <div class="gut">
+        <div class="wrap home">
+          <div class="hero">
+            <header class="masthead">
+              <p class="eyebrow">AAISM · 3 domains · 17 mind maps</p>
+              <h1 id="homeTitle" tabindex="-1">Map Drill</h1>
+              <p class="lede">Rebuild each mind map from memory. Drag a term onto its branch, or tap a term and then tap the spot where it belongs.</p>
+            </header>
+            <figure class="demo" aria-hidden="true">
+              <div class="sheet mini">
+                <div class="sheet-head"><p class="wp">Map 2.1 · Risk governance</p></div>
+                <span class="tab"><span class="lt"><span>Risk response strategies</span></span></span>
+                <ol class="kids">
+                  <li><div class="row"><span class="lbl"><span class="lt"><span>Accept</span></span></span></div></li>
+                  <li><div class="row"><span class="lbl placed"><span class="lt"><span>Avoid</span></span><svg class="tk" viewBox="0 0 22 18"><path d="M2.6 10.4c1.9 1.1 3.4 2.7 4.7 5.2C10.1 9.7 14.2 5.3 19.6 2.3"/></svg></span></div></li>
+                  <li><div class="row"><span class="lbl"><span class="lt"><span>Mitigate</span></span></span></div></li>
+                  <li><div class="row"><span class="slot over"></span></div></li>
+                </ol>
+                <span class="chip demo-chip"><span class="lt"><span>Transfer</span></span></span>
+              </div>
+            </figure>
+          </div>
+
+          <section class="levels" aria-labelledby="lvlLabel">
+            <h2 id="lvlLabel" class="label">Difficulty</h2>
+            <div class="seg" id="seg" role="radiogroup" aria-labelledby="lvlLabel">
+              <button type="button" role="radio" data-level="easy" aria-checked="false" tabindex="-1">Easy</button>
+              <button type="button" role="radio" data-level="medium" aria-checked="true" tabindex="0">Medium</button>
+              <button type="button" role="radio" data-level="hard" aria-checked="false" tabindex="-1">Hard</button>
+            </div>
+            <p class="level-note" id="levelNote"></p>
+          </section>
+
+          <p class="tally" id="tally"></p>
+          <div class="domains" id="domains"></div>
+
+          <footer class="home-foot">
+            <p>Ticks: three for a clean run with no misses or hints, two when at least 85% of terms land first time, one for finishing.</p>
+            <p id="saveNote">Progress is saved in this browser.</p>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="play" class="screen" hidden aria-labelledby="playTitle">
+    <header class="bar">
+      <div class="gut"><div class="wrap">
+        <div class="bar-in">
+          <button type="button" class="iconbtn" id="playBack" aria-label="Back to all maps"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <div class="bar-title"><span class="ref" id="playRef"></span><h2 id="playTitle" tabindex="-1"></h2></div>
+          <button type="button" class="iconbtn" id="playRestart" aria-label="Start this map over"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 4.5v4h4"/></svg></button>
+        </div>
+        <div class="bar-stats">
+          <span class="pill" id="playLevel"></span>
+          <span id="playCount"></span>
+          <span class="misses" id="playMiss"></span>
+          <span id="playClock" aria-label="Time on this map"></span>
+        </div>
+      </div></div>
+      <div class="meter" aria-hidden="true"><span id="playMeter"></span></div>
+    </header>
+    <div class="scroll board" id="board">
+      <div class="gut"><div class="wrap"><article class="sheet" id="sheet"></article></div></div>
+    </div>
+    <footer class="tray">
+      <div class="toast" id="toast" aria-hidden="true" hidden></div>
+      <div class="gut"><div class="wrap">
+        <div class="tray-head">
+          <span class="left" id="trayLeft"></span>
+          <div class="tray-tools">
+            <button type="button" class="tbtn" id="hintBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.5.4.8 1 .8 1.6V16h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0 0 12 3z"/></svg>Hint</button>
+            <button type="button" class="tbtn" id="swapBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h13"/><path d="M14 4l4 4-4 4"/><path d="M20 16H7"/><path d="M10 12l-4 4 4 4"/></svg>Swap terms</button>
+          </div>
+        </div>
+        <div class="hand" id="hand" role="group" aria-label="Terms to place"></div>
+      </div></div>
+    </footer>
+  </section>
+
+  <section id="study" class="screen" hidden aria-labelledby="studyTitle">
+    <header class="bar plain">
+      <div class="gut"><div class="wrap">
+        <div class="bar-in">
+          <button type="button" class="iconbtn" id="studyBack" aria-label="Back to all maps"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <div class="bar-title"><span class="ref" id="studyRef"></span><h2 id="studyTitle" tabindex="-1"></h2></div>
+        </div>
+      </div></div>
+    </header>
+    <div class="scroll board" id="studyBoard">
+      <div class="gut"><div class="wrap"><article class="sheet" id="studySheet"></article></div></div>
+    </div>
+    <footer class="studybar">
+      <div class="gut"><div class="wrap">
+        <span class="study-hint">Read it through, then rebuild it from memory.</span>
+        <button type="button" class="btn primary" id="studyPlay">Play</button>
+      </div></div>
+    </footer>
+  </section>
+</div>
+
+<div class="overlay" id="done" hidden>
+  <div class="donecard" role="dialog" aria-modal="true" aria-labelledby="doneTitle">
+    <div class="stamp" id="stamp" aria-hidden="true">Cleared<small id="stampDate"></small></div>
+    <p class="eyebrow" id="doneRef"></p>
+    <h2 id="doneTitle" tabindex="-1"></h2>
+    <div class="bigticks" id="doneTicks" role="img"></div>
+    <dl class="stats" id="doneStats"></dl>
+    <p class="best" id="doneBest"></p>
+    <div class="review" id="doneReview"></div>
+    <div class="done-actions" id="doneActions"></div>
+  </div>
+</div>
+<div id="live" class="sr-only" aria-live="polite"></div>
+
+<script id="mapdata">
+window.MAP_DATA = [
+{ id: "1.1", d: 1, title: "Structure, Oversight and Stakeholders",
+  tag: "Ensure accountability and alignment with enterprise objectives.", src: `
+AI Governance & Readiness
+ AI Governance
+  Oversight
+  RAI|Responsible AI
+  Governance structures
+   Boards
+   Committees
+   Ethics bodies
+ AI Readiness
+  Governance components
+   Processes
+   Compliance
+   IT maturity
+  Essential skills and training
+Roles, Responsibilities, and Stakeholders
+ AI Roles & Responsibilities
+  Leadership & strategy
+  Development & operations
+  Users
+  Governance & Oversight
+ Enterprise Governance
+  Governing body accountability
+  Risk appetite
+  Continuous review & improvement
+ Stakeholders
+  Internal
+  External
+` },
+{ id: "1.2", d: 1, title: "AI Regulation, Standards, and Frameworks", tag: "", src: `
+Main features
+ Use cases
+ Risk classification
+ Penalties and enforcement
+ Transparency and oversight requirements
+ AI Policy Considerations
+Laws and regulation
+ Notable AI laws
+  EU AI Act
+   Risk categories
+  Brazil PL 2338
+  California (AB 2013)
+  Texas (TRAIGA)
+Frameworks & Standards
+ General AI Frameworks
+  OECD AI Principles
+  NIST AI RMF #
+   Govern
+   Map
+   Measure
+   Manage
+  ISO/IEC 42001 (AIMS)
+  Singapore PDPC Model AI Governance Framework
+ Ethics & Design Standards
+  IEEE 7000-2021
+ Operational IT & Governance Frameworks
+  COBIT #
+   EDM
+   APO
+   BAI
+   DSS
+   MEA
+  CSA Four Pillars
+   Focus on transparency
+   Model Cards
+   Data Sheets
+   Risk Cards
+   Scenario Planning
+` },
+{ id: "1.3", d: 1, title: "AI Strategy Components and Implications",
+  tag: "Enforce responsible, ethical, and compliant use through clear policies and procedures.", src: `
+AI Strategy
+ AI Charter
+  Objectives
+  Scope
+ AI Policy elements
+  Introduction
+  Glossary
+  Purpose
+ Other main components
+  Vision
+  Mission
+  AUP|Acceptable Use Policy
+  Risk assessment
+ Build vs. Buy
+  On-Premises hosting
+  Cloud Hosting
+  Vendors
+  Off-the-Shelf Solutions
+ AI Policy considerations
+  Strategic alignment
+  Clarity and consistency
+  Stakeholder engagement
+  AI Training
+  Compliance
+  Periodic Review
+  RAI|Responsible AI
+   RAI Program
+   RAI Maturity Matrix
+   HITL|Human-in-the-Loop
+  Ethics
+` },
+{ id: "1.4", d: 1, title: "AI Limitations and Ethical Use",
+  tag: "AI limitations can undermine fairness, trust, and reliability.", src: `
+Main Limitations
+ AI Bias
+ Token limits
+ Hallucinations
+Ethical considerations
+ Ethical use of AI
+ Ethical Impact Assessment (EIA)
+ Trust and safety
+ IP considerations
+ Human rights
+ Environmental impact
+ Data collection
+  Consent
+  Sensitivity
+  Fit for purpose
+ Fairness
+  Fairness metrics
+` },
+{ id: "1.5", d: 1, title: "Data Lifecycle and Quality Management", tag: "", src: `
+Basic Documentation and transparency
+ Documenting AI Business case
+  Minimum requirements
+  Potential costs
+  RoI
+ AI Inventory
+  Objectives
+   Identify AIS Assets
+   Improve AI governance
+   Reinforce security
+  Inventory baseline data
+   AIS name
+   Version
+   Licence
+   Cost
+   Vendor details
+  Inventory methods
+   Surveys
+   Interviews
+  Shadow AI
+Data Lifecycle Management
+ Data Inventory #
+  Plan
+  Decide
+  Populate
+  Publish
+ Data Classification
+  CDEs|Critical Data Elements
+  Data Security Level #
+   Public
+   Internal
+   Confidential
+   Restricted
+  Data Sensitivity Level
+   Considerations #
+    Data Source
+    Data Lake
+    Data Exploration
+    Vector Database
+    AI System Production
+ Data Quality and Integrity
+  Raw data
+  Quality dimensions
+   Accuracy
+   Completeness
+   Consistency
+   Timeliness
+   Validity
+   Uniqueness
+  Data Balancing
+   Oversampling
+   Undersampling
+   Cost-sensitive algorithms
+  Data Scarcity
+   Augmentation
+   Model Selection
+` },
+{ id: "1.6", d: 1, title: "AI Security",
+  tag: "Ensuring AI systems are robust, reliable, and resilient against threats across their lifecycle.", src: `
+Protocols and Practices
+ Trust but verify
+ Designate AI Lead
+ Cost-benefit analysis
+ Create Cyber Programs
+  IP leakage
+  Business continuity
+ Mandate Audits
+AI Security Components
+ AI Security vs. Securing AI
+ InfoSec Security Elements
+ Measuring effectiveness
+  Common metrics
+   Accountability
+   Fairness
+   Human well-being
+   Performance
+   Privacy and data governance
+   Robustness and digital security
+   Safety
+   Transparency and explainability
+  AI KPIs vs. KRIs
+ Network security
+  Log analysis
+  APT Malware Detection
+  Threat Intelligence
+  AI-enabled decision-making
+   Vulnerability Analysis
+   Managing AI Vendor Risk
+` },
+{ id: "1.7", d: 1, title: "AI Incident Response", tag: "", src: `
+Primary attributes
+ Traditional vs. AI-Powered
+ IR Objectives
+  Identify and prevent threats
+  Ensure system reliability
+  Ethical compliance
+ IR Techniques
+  Data ingestion
+  Anomaly detection
+  Event correlation
+  Automated Incident Triage
+  Root cause analysis
+ Best Practices
+  Strategy Updates
+  Continuous Learning
+  Adaptive Learning Algorithms
+ Challenges
+  Bias
+  Accuracy
+IR Phases #
+ Prepare
+  Policies
+  Documentation
+   Communication plan
+   Escalation Protocols
+  Incident Response Team
+  TTX|Tabletop Exercises
+ Identify and Report
+  Incident Threshold
+  AI and mathematical probability
+ Assess
+  Collecting facts
+  Questions
+   Who was impacted?
+   What is still unknown?
+   What attack was carried out?
+ Response #
+  Containment
+  Eradication
+  Recovery
+ Post-incident
+  Post-mortem analysis
+  Areas of improvement
+` },
+{ id: "2.1", d: 2, title: "AI Risk Management", tag: "", src: `
+Risk governance
+ Risk Management Life Cycle #
+  Identification
+  Assessment
+  Risk response
+  Risk control
+ OWASP Top 10
+ AI Risk Assessment
+  FRIA|Fundamental Rights Impact Assessment
+  Conformity Assessments
+  PIA|Privacy Impact Assessment
+ Acceptable vs. Unacceptable risk
+ Risk response strategies
+  Accept
+  Avoid
+  Mitigate
+  Transfer
+Risk categories
+ Development
+ Data
+ Operations
+ LLM/AI attacks
+ Trust
+ Compliance
+AI Threat Modeling
+ STRIDE
+ PASTA
+ LINDDUN
+ Trike
+ VAST
+ OCTAVE
+ MAESTRO
+` },
+{ id: "2.2", d: 2, title: "AI Threats and Vulnerabilities",
+  tag: "Undermine security, trust, and business value.", src: `
+Categories of AI Threats
+ Technical
+  Model drift
+  Model watermarking attacks
+  Model inversion
+  Hallucinations
+  Data Poisoning
+  Model Poisoning
+  Prompt injection
+ Non-technical
+  Bias amplification
+  Deepfakes
+  Export controls
+  Black-box problem
+Threat Actors
+ Insider Threats
+ Nation states
+ Cybercriminals
+ AI developers
+Risk Domains
+ Competitive
+ Productive
+ Reputational
+ Response
+` },
+{ id: "2.3", d: 2, title: "AI Supply Chain",
+  tag: "Focuses on identifying, assessing, and mitigating risks across all parties.",
+  notes: {
+    "AI Operators": {
+      study: "The slide shows these duties under the opposite headings. This map follows the EU AI Act: providers carry out the conformity assessment, keep the documentation and monitor the system; deployers use it as directed and keep human oversight.",
+      play: "Arranged to match the EU AI Act, which differs from the slide. The Study view explains."
+    }
+  }, src: `
+Supply Chain Management
+ Vendor-specific Risks
+  Operational
+  Financial
+  Geopolitical
+  Compliance
+ Red flags
+  Financial instability
+  Poor security practices
+ Dimensions of Risk
+  People
+  Processes
+  Technology
+  Data
+  Model
+ Supply Chain Parties
+  The 5 Parties #
+   First
+   Third
+   Fourth
+   Fifth
+   Nth
+  AI Operators
+   Deployers
+    Use as directed
+    Oversight
+   Providers
+    Conformity assessment
+    Documentation
+    Monitoring
+` },
+{ id: "3.1", d: 3, title: "AI Architecture & Foundations", tag: "", src: `
+AI Architecture
+ Categorization
+  By function #
+   Reactive machines
+   Limited memory
+   Theory of the mind (ToM)
+   Self-aware
+  By Capability #
+   Artificial Narrow Intelligence
+   Artificial General Intelligence
+   Artificial Super Intelligence
+ Artificial intelligence
+ Machine learning
+ Deep learning
+  Natural Language Processing (NLP)
+  Neural networks
+   System Architectures
+    Feedforward neural network (FNN)
+    Recurrent neural network (RNN)
+    Convolutional neural network (CNN)
+   Layers #
+    Input layer
+    Hidden layer
+    Output layer
+ Generative AI
+  Generative Adversarial Network (GAN)
+  Delivery model
+   AI as a Service (AIaaS)
+ Data science
+` },
+{ id: "3.2", d: 3, title: "AI Algorithm Classes & Security Architecture", tag: "", src: `
+AI Algorithm Classes
+ Supervised learning
+  Linear regression
+  Logistic regression
+  Tree-based models
+ Unsupervised learning
+  K-means clustering
+  Hierarchical clustering
+   Agglomerative
+   Divisive
+  Principal component analysis
+ Reinforcement learning
+  Q-learning
+  Deep Q networks (DQNs)
+  Policy-based
+Architecture Considerations
+ AI Secure by Design
+  Three Principles
+  DevSecOps Cycle #
+   Plan
+   Code
+   Build
+   Test
+   Release
+   Deploy
+   Operate
+   Monitor
+   Feedback
+ Data dependency
+ Data storage
+ AI Change Management
+  BCP
+  Shared responsibility
+ Roles
+  AI producer
+  AI provider
+  AI customer
+` },
+{ id: "3.3", d: 3, title: "AI Life Cycle",
+  tag: "Ensures risk management, data integrity, and accountability at every stage.", src: `
+Stages of the AI Life Cycle #
+ Plan and design
+  Risk Assessment
+  Identify bias
+  Build prototype
+ Collect and process data
+  Consent
+  Data cleaning
+  Data provenance
+  Data lineage
+ Build/adapt model(s)
+  Sub-stages #
+   Model creation
+   Training and calibration
+   Interpret outputs
+ Test, evaluate, verify, validate (TEVV) #
+  Test
+   Model testing
+   Stress testing
+   Comparative analysis
+  Evaluate
+  Verify
+  Validate
+ Deploy
+  Sub-stages #
+   Pilot
+   Compatibility check
+   Ensure compliance
+   Manage organizational change
+   Evaluate UX
+ Operate and monitor
+  Day-to-day Maintenance
+  Metric tracking
+  Establishing (QMS) Quality Management System
+ Retire/decommission
+  Phase out schedule
+  Data migration or deletion
+  System integration
+` },
+{ id: "3.4", d: 3, title: "Data Management Controls", tag: "", src: `
+Data Governance
+ Data acquisition
+  Data processing agreements
+  Standard Operating procedures
+   Data’s origin
+   Legal basis for receipt
+  Security controls
+   Dataflow mapping
+   Access control review
+   Data integrity monitoring
+ Data utilization
+  Storage controls
+  Privacy by Design (PbD)
+ Data retention and destruction
+  Retention Schedule
+  Auditable logs
+Data Security
+ Data encoding
+  Tokenized data
+ Data access
+ Data confidentiality
+ Data backup
+ Data Integrity
+  Integrity controls
+   Anomaly detection
+   Separate data
+   Data validation
+   Model hardening
+` },
+{ id: "3.5", d: 3, title: "Privacy and Safety Controls",
+  tag: "Manage risk through transparency, human oversight, and continuous monitoring of data, models, and infrastructure.", src: `
+Harm perspectives
+ Individuals
+ Groups
+ Society
+Control types
+ Security
+ Privacy
+  GDPR rights
+   Informed
+   Access
+   Rectification
+   Erasure
+   Restrict processing
+   Data portability
+   Object
+   ADM and profiling
+  Data retention
+  Privacy-enhancing technologies
+   Data masking
+   Anonymization
+ Ethics
+  HITL
+  AI ethics
+  AI code of conduct
+ Trust
+  Inputs and outputs
+  Model design
+  Levels of automation
+ Safety
+  Logging and Monitoring
+  AI Observability
+   Data Pipeline
+   Infrastructure monitoring
+   Interpretability
+` },
+{ id: "3.6", d: 3, title: "Security Controls", tag: "", src: `
+Technical, security and privacy controls
+ Data quality #
+  Assess
+  Resolve
+  Monitor
+ Access control
+  MFA
+ Configuration management
+ Testing frameworks and protocols
+  End-to-end testing
+  Bias and fairness testing
+ Privacy
+  Encryption, hashing, de-identification
+  Key management
+  IAM
+  PIAs
+Operations and life cycle management
+ Dataflow diagrams (DFD)
+ Process Flow Documentation
+ AI decision-making documentation
+  Explainability
+  Traceability
+  Compliance
+ Version control
+ Change Management
+ Continuous monitoring
+System Development Life Cycle (SDLC)
+ Project management
+ Ideation phase
+  Business problem
+  Goals and objectives
+  Understanding harm
+ Design phase
+ Deployment management
+Ethical and human values
+ Ethical Impact Assessment
+ Consent Management
+ Bias management
+` },
+{ id: "3.7", d: 3, title: "Other Controls and Metrics",
+  tag: "Ensure AI systems remain secure and compliant.", src: `
+AI-Enabled tools
+ SIEM
+ SOAR
+ XDR
+ UEBA
+AI Access Controls
+ Zero Trust
+  Never trust, always verify
+  Least privilege access
+ Considerations
+  RBAC
+  Validation
+  Review of access
+Shadow AI Controls
+ Shadow IT policy
+ Cloud Access Security Brokers (CASB)
+Continuous Security Improvement
+ AI Security Awareness Training
+ Continuous monitoring
+ Security Metrics
+  Level of preparedness
+  Instruction attempts
+  DLP effectiveness
+  AI solution performance
+` }
+];
+</script>
+
+<script id="engine">
+/* The rules of the game, kept free of the page so they can be tested on their own.
+   Positions are places in the map's shape; assign[position] says which term currently belongs there.
+   Swapping is allowed only between sibling branches that are still entirely blank, share the same
+   shape and sit under an unordered parent, so any order of equally valid answers is accepted. */
+window.MapEngine = (function () {
+  "use strict";
+  function shuffle(a, rnd) {
+    rnd = rnd || Math.random;
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  function parse(m) {
+    if (m.nodes) return m;
+    var nodes = [{ id: 0, key: m.title, main: m.title, sub: "", depth: 0, parent: -1, kids: [], seq: false, idx: 0 }];
+    var stack = [nodes[0]];
+    m.src.split("\n").forEach(function (line) {
+      if (!line.trim()) return;
+      var depth = line.length - line.replace(/^ +/, "").length + 1;
+      var text = line.trim(), seq = false;
+      if (/ #$/.test(text)) { seq = true; text = text.slice(0, -2).trim(); }
+      while (stack.length > depth) stack.pop();
+      var parent = stack[stack.length - 1];
+      if (parent.depth !== depth - 1) throw new Error("Indent error in map " + m.id + " at: " + text);
+      var bar = text.indexOf("|");
+      var node = {
+        id: nodes.length, key: text, main: bar < 0 ? text : text.slice(0, bar), sub: bar < 0 ? "" : text.slice(bar + 1),
+        depth: depth, parent: parent.id, kids: [], seq: seq, idx: parent.kids.length
+      };
+      parent.kids.push(node.id); nodes.push(node); stack.push(node);
+    });
+    var sig = new Array(nodes.length);
+    (function walk(i) {
+      nodes[i].kids.forEach(walk);
+      sig[i] = (nodes[i].seq ? "s" : "") + "(" + nodes[i].kids.map(function (k) { return sig[k]; }).join("") + ")";
+    })(0);
+    m.nodes = nodes; m.sig = sig;
+    m.leaves = nodes.filter(function (n) { return n.id > 0 && !n.kids.length; }).length;
+    return m;
+  }
+  function easyCount(m) { return Math.min(m.leaves, Math.max(5, Math.round(m.leaves * 0.45))); }
+  function termCount(m, level) { return level === "hard" ? m.nodes.length - 1 : level === "medium" ? m.leaves : easyCount(m); }
+  function newRound(m, level, handSize, rnd) {
+    var N = m.nodes.length, i;
+    var blank = new Array(N).fill(false);
+    var leaves = [];
+    for (i = 1; i < N; i++) if (!m.nodes[i].kids.length) leaves.push(i);
+    if (level === "hard") { for (i = 1; i < N; i++) blank[i] = true; }
+    else if (level === "medium") leaves.forEach(function (p) { blank[p] = true; });
+    else shuffle(leaves.slice(), rnd).slice(0, easyCount(m)).forEach(function (p) { blank[p] = true; });
+    var chips = [];
+    for (i = 1; i < N; i++) if (blank[i]) chips.push({ id: chips.length, node: i, key: m.nodes[i].key });
+    var order = shuffle(chips.map(function (c) { return c.id; }), rnd);
+    if (level === "hard") order.sort(function (a, b) { return m.nodes[chips[a].node].depth - m.nodes[chips[b].node].depth; });
+    var assign = []; for (i = 0; i < N; i++) assign.push(i);
+    return {
+      mapId: m.id, level: level, blank: blank, assign: assign, filled: new Array(N).fill(false), chips: chips,
+      hand: order.slice(0, handSize), deck: order.slice(handSize), misses: 0, hints: 0, missCount: {},
+      review: new Set(), elapsed: 0, runningSince: null, done: false, selected: null
+    };
+  }
+  function open(m, r, x) {
+    if (!r.blank[x] || r.filled[x]) return false;
+    var k = m.nodes[x].kids;
+    for (var i = 0; i < k.length; i++) if (!open(m, r, k[i])) return false;
+    return true;
+  }
+  function swappable(m, r, a, b) {
+    var p = m.nodes[a].parent;
+    return p === m.nodes[b].parent && !m.nodes[p].seq && m.sig[a] === m.sig[b] && open(m, r, a) && open(m, r, b);
+  }
+  /* Can the term now assigned at position b be moved to position a, using only allowed swaps? */
+  function canMap(m, r, a, b, out) {
+    if (a === b) return true;
+    var na = m.nodes[a], nb = m.nodes[b];
+    if (na.depth !== nb.depth) return false;
+    if (na.parent === nb.parent) {
+      if (swappable(m, r, a, b)) { out.push([a, b]); return true; }
+      return false;
+    }
+    var sub = [];
+    if (!canMap(m, r, na.parent, nb.parent, sub)) return false;
+    var moved = m.nodes[na.parent].kids[nb.idx];
+    for (var i = 0; i < sub.length; i++) out.push(sub[i]);
+    if (moved === a) return true;
+    if (!m.nodes[na.parent].seq && m.sig[a] === m.sig[moved]) { out.push([a, moved]); return true; }
+    return false;
+  }
+  function swapSub(m, r, a, b) {
+    var t = r.assign[a]; r.assign[a] = r.assign[b]; r.assign[b] = t;
+    var ka = m.nodes[a].kids, kb = m.nodes[b].kids;
+    for (var i = 0; i < ka.length; i++) swapSub(m, r, ka[i], kb[i]);
+  }
+  function tryPlace(m, r, chipId, pos) {
+    if (!(pos > 0 && pos < m.nodes.length) || !r.blank[pos] || r.filled[pos]) return { ok: false };
+    var chip = r.chips[chipId];
+    if (!chip) return { ok: false };
+    var swaps = null;
+    if (m.nodes[r.assign[pos]].key === chip.key) swaps = [];
+    else {
+      for (var p = 1; p < m.nodes.length && !swaps; p++) {
+        if (p === pos || !r.blank[p] || r.filled[p] || m.nodes[r.assign[p]].key !== chip.key) continue;
+        var out = [];
+        if (canMap(m, r, pos, p, out)) swaps = out;
+      }
+    }
+    if (!swaps) return { ok: false };
+    swaps.forEach(function (s) { swapSub(m, r, s[0], s[1]); });
+    r.filled[pos] = true;
+    return { ok: true, swaps: swaps };
+  }
+  function spotFor(m, r, key) {
+    for (var p = 1; p < m.nodes.length; p++) if (r.blank[p] && !r.filled[p] && m.nodes[r.assign[p]].key === key) return p;
+    return -1;
+  }
+  function take(r, chipId, handSize) {
+    var i = r.hand.indexOf(chipId);
+    if (i < 0) return [];
+    r.hand.splice(i, 1);
+    var added = [];
+    if (r.deck.length && r.hand.length < handSize) { var first = r.deck.shift(); r.hand.splice(i, 0, first); added.push(first); }
+    while (r.deck.length && r.hand.length < handSize) { var nx = r.deck.shift(); r.hand.push(nx); added.push(nx); }
+    return added;
+  }
+  function isComplete(r) {
+    for (var i = 1; i < r.blank.length; i++) if (r.blank[i] && !r.filled[i]) return false;
+    return true;
+  }
+  return { shuffle: shuffle, parse: parse, easyCount: easyCount, termCount: termCount, newRound: newRound,
+    tryPlace: tryPlace, spotFor: spotFor, take: take, isComplete: isComplete };
+})();
+</script>
+
+<script>
+(function () {
+  "use strict";
+  var E = window.MapEngine;
+  var MAPS = window.MAP_DATA;
+  MAPS.forEach(E.parse);
+  var BY_ID = {};
+  MAPS.forEach(function (m) { BY_ID[m.id] = m; });
+  var DOMAINS = [
+    { n: 1, name: "AI Governance and Program Management" },
+    { n: 2, name: "AI Risk Management" },
+    { n: 3, name: "AI Technologies and Controls" }
+  ];
+  var LEVELS = ["easy", "medium", "hard"];
+  var LV = {
+    easy: { name: "Easy", note: "About half the outer terms are blank. Every branch heading stays in place." },
+    medium: { name: "Medium", note: "Every outer term is blank. Branch headings stay in place to guide you." },
+    hard: { name: "Hard", note: "The whole map is blank apart from its title. Rebuild it trunk to tips." }
+  };
+  var $ = function (id) { return document.getElementById(id); };
+  var boardEl = $("board"), handEl = $("hand");
+  var SVGNS = "http://www.w3.org/2000/svg";
+  var TICK_D = "M2.6 10.4c1.9 1.1 3.4 2.7 4.7 5.2C10.1 9.7 14.2 5.3 19.6 2.3";
+
+  function reduceMotion() { return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function tickSvg(cls) {
+    var s = document.createElementNS(SVGNS, "svg");
+    s.setAttribute("viewBox", "0 0 22 18"); s.setAttribute("class", cls); s.setAttribute("aria-hidden", "true");
+    var p = document.createElementNS(SVGNS, "path"); p.setAttribute("d", TICK_D); s.appendChild(p);
+    return s;
+  }
+  function fmt(ms) {
+    var s = Math.max(0, Math.floor(ms / 1000));
+    return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+  }
+  function handSize() {
+    if (window.innerWidth >= 720) return 12;
+    return window.innerHeight < 600 ? 4 : 6;
+  }
+
+  /* ---------------- progress: this browser, plus the viewer's own private store when available ---------------- */
+  var LS_KEY = "aaism-map-drill:v1";
+  var store = { level: "medium", best: {} };
+  function cleanBest(src) {
+    var out = {};
+    if (!src || typeof src !== "object") return out;
+    Object.keys(src).forEach(function (id) {
+      var e = src[id];
+      if (!BY_ID[id] || !e || typeof e !== "object") return;
+      ["e", "m", "h"].forEach(function (k) {
+        var v = e[k];
+        if (v && isFinite(v.t) && isFinite(v.ms)) {
+          out[id] = out[id] || {};
+          out[id][k] = { t: Math.max(1, Math.min(3, Math.round(v.t))), ms: Math.max(0, Math.round(v.ms)) };
+        }
+      });
+    });
+    return out;
+  }
+  function mergeBest(a, b) {
+    var out = cleanBest(a);
+    Object.keys(b).forEach(function (id) {
+      Object.keys(b[id]).forEach(function (k) {
+        var x = out[id] && out[id][k], y = b[id][k];
+        if (!x) { out[id] = out[id] || {}; out[id][k] = { t: y.t, ms: y.ms }; }
+        else { x.t = Math.max(x.t, y.t); x.ms = Math.min(x.ms, y.ms); }
+      });
+    });
+    return out;
+  }
+  function canon(o) {
+    return JSON.stringify(o, function (k, v) {
+      if (v && typeof v === "object" && !Array.isArray(v)) {
+        return Object.keys(v).sort().reduce(function (acc, key) { acc[key] = v[key]; return acc; }, {});
+      }
+      return v;
+    });
+  }
+  try {
+    var raw = localStorage.getItem(LS_KEY);
+    if (raw) {
+      var saved = JSON.parse(raw);
+      if (saved && LEVELS.indexOf(saved.level) >= 0) store.level = saved.level;
+      store.best = cleanBest(saved && saved.best);
+    }
+  } catch (e) { /* storage unavailable: progress lasts for this visit only */ }
+  function saveLocal() {
+    try { localStorage.setItem(LS_KEY, JSON.stringify({ level: store.level, best: store.best })); } catch (e) { /* ignore */ }
+  }
+  function bestOf(id, level) { var b = store.best[id]; return (b && b[level.charAt(0)]) || null; }
+
+  var cloud = null, cloudBusy = false, cloudAgain = false;
+  function setSaveNote() {
+    $("saveNote").textContent = cloud
+      ? "Progress is saved to your account, so it follows you to other devices."
+      : "Progress is saved in this browser.";
+  }
+  function connectCloud() {
+    var c = window.claude;
+    if (!c || typeof c.use !== "function") return;
+    Promise.all([c.use("db"), c.use("user")]).then(function (caps) {
+      var db = caps[0], user = caps[1];
+      if (!db || !user) return null;
+      return user.id().then(function (uid) {
+        if (!uid) return null;
+        var ref = db.doc("data/users/" + uid + "/progress");
+        return ref.get().then(function (snap) {
+          var data = snap && snap.exists ? (snap.data() || {}) : {};
+          var remote = cleanBest(data.best);
+          var merged = mergeBest(store.best, remote);
+          cloud = { ref: ref };
+          setSaveNote();
+          if (canon(merged) !== canon(store.best)) {
+            store.best = merged; saveLocal();
+            if (view === "home") renderHome();
+          }
+          if (canon(merged) !== canon(remote) && Object.keys(merged).length) saveCloud(true);
+        });
+      });
+    }).catch(function () { cloud = null; setSaveNote(); });
+  }
+  function saveCloud(retry) {
+    if (!cloud) return;
+    if (cloudBusy) { cloudAgain = true; return; }
+    cloudBusy = true;
+    cloud.ref.set({ v: 1, best: JSON.parse(JSON.stringify(store.best)) }).then(function () {
+      cloudBusy = false;
+      if (cloudAgain) { cloudAgain = false; saveCloud(true); }
+    }, function (err) {
+      cloudBusy = false;
+      if (err && err.code === "unavailable" && retry) {
+        setTimeout(function () { saveCloud(false); }, 1500 + Math.random() * 1000);
+      } else if (!(err && err.code === "unavailable")) {
+        cloud = null; setSaveNote();
+      }
+    });
+  }
+  function recordBest(id, level, t, ms) {
+    var k = level.charAt(0);
+    var b = store.best[id] || (store.best[id] = {});
+    var cur = b[k];
+    var imp = { first: !cur, ticks: false, time: false };
+    if (!cur) b[k] = { t: t, ms: ms };
+    else {
+      if (t > cur.t) { cur.t = t; imp.ticks = true; }
+      if (ms < cur.ms) { cur.ms = ms; imp.time = true; }
+    }
+    if (imp.first || imp.ticks || imp.time) { saveLocal(); saveCloud(true); }
+    return imp;
+  }
+
+  /* ---------------- views ---------------- */
+  var view = "home", round = null, curMap = null, studyMap = null, homeScrollTop = 0;
+  function show(name) {
+    if (view === "home" && name !== "home") homeScrollTop = $("homeScroll").scrollTop;
+    ["home", "play", "study"].forEach(function (v) { $(v).hidden = v !== name; });
+    document.documentElement.classList.toggle("in-play", name === "play");
+    view = name;
+  }
+  function goHome(focusId) {
+    cancelDrag();
+    if (round && !round.done) pauseClock();
+    closeDone();
+    show("home");
+    renderHome();
+    $("homeScroll").scrollTop = homeScrollTop;
+    var btn = focusId && document.querySelector('[data-play="' + focusId + '"]');
+    (btn || $("homeTitle")).focus({ preventScroll: true });
+  }
+
+  /* ---------------- home ---------------- */
+  function renderHome() {
+    document.querySelectorAll("#seg [data-level]").forEach(function (b) {
+      var on = b.getAttribute("data-level") === store.level;
+      b.setAttribute("aria-checked", String(on));
+      b.tabIndex = on ? 0 : -1;
+    });
+    $("levelNote").textContent = LV[store.level].note;
+    var cleared = 0, ticks = 0;
+    MAPS.forEach(function (m) { var b = bestOf(m.id, store.level); if (b) { cleared++; ticks += b.t; } });
+    $("tally").textContent = LV[store.level].name + ": " + cleared + " of " + MAPS.length + " maps cleared · " +
+      ticks + " of " + MAPS.length * 3 + " ticks";
+    var host = $("domains");
+    host.textContent = "";
+    DOMAINS.forEach(function (d) {
+      var maps = MAPS.filter(function (m) { return m.d === d.n; });
+      var sec = el("section", "domain");
+      var head = el("div", "domain-head");
+      head.append(el("span", "dnum", String(d.n)), el("h2", null, d.name), el("span", "count", maps.length + " maps"));
+      var ul = el("ul", "maplist");
+      maps.forEach(function (m) { ul.append(mapRow(m)); });
+      sec.append(head, ul);
+      host.append(sec);
+    });
+  }
+  function mapRow(m) {
+    var li = el("li", "maprow");
+    li.append(el("span", "ref", m.id));
+    var info = el("div", "mapinfo");
+    var b = bestOf(m.id, store.level);
+    info.append(el("h3", null, m.title), el("p", "meta", E.termCount(m, store.level) + " terms" + (b ? " · best " + fmt(b.ms) : "")));
+    li.append(info);
+    var tk = el("span", "ticks");
+    tk.setAttribute("role", "img");
+    tk.setAttribute("aria-label", b ? "Best: " + b.t + " of 3 ticks" : "Not cleared yet");
+    for (var i = 0; i < 3; i++) tk.append(tickSvg("tick" + (b && i < b.t ? " on" : "")));
+    li.append(tk);
+    var act = el("div", "act");
+    var study = el("button", "btn", "Study");
+    study.type = "button"; study.setAttribute("data-study", m.id); study.setAttribute("aria-label", "Study " + m.title);
+    var resuming = round && !round.done && round.mapId === m.id && round.level === store.level;
+    var word = resuming ? "Resume" : "Play";
+    var play = el("button", "btn primary", word);
+    play.type = "button"; play.setAttribute("data-play", m.id);
+    play.setAttribute("aria-label", word + " " + m.title + " at " + LV[store.level].name);
+    act.append(study, play);
+    li.append(act);
+    return li;
+  }
+  $("domains").addEventListener("click", function (e) {
+    var p = e.target.closest("[data-play]");
+    if (p) { openPlay(p.getAttribute("data-play")); return; }
+    var s = e.target.closest("[data-study]");
+    if (s) openStudy(s.getAttribute("data-study"));
+  });
+  function setLevel(l) {
+    if (LEVELS.indexOf(l) < 0 || l === store.level) return;
+    store.level = l; saveLocal(); renderHome();
+  }
+  $("seg").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-level]");
+    if (b) setLevel(b.getAttribute("data-level"));
+  });
+  $("seg").addEventListener("keydown", function (e) {
+    var i = LEVELS.indexOf(store.level), j = -1;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") j = (i + 1) % 3;
+    else if (e.key === "ArrowLeft" || e.key === "ArrowUp") j = (i + 2) % 3;
+    if (j < 0) return;
+    e.preventDefault();
+    setLevel(LEVELS[j]);
+    $("seg").querySelector('[data-level="' + LEVELS[j] + '"]').focus();
+  });
+
+  /* ---------------- drawing a map ---------------- */
+  function textCol(node) {
+    var c = el("span", "lt");
+    c.append(el("span", "lm", node.main));
+    if (node.sub) c.append(el("small", null, node.sub));
+    return c;
+  }
+  function labelEl(node, isTab, placed) {
+    var s = el("span", (isTab ? "tab" : "lbl") + (placed ? " placed" : ""));
+    s.append(textCol(node));
+    if (placed) s.append(tickSvg("tk"));
+    return s;
+  }
+  function slotLabel(m, r, pos) {
+    var n = m.nodes[pos], p = n.parent, s;
+    if (p === 0) s = "Blank main branch " + (n.idx + 1) + " of " + m.nodes[0].kids.length;
+    else if (r.blank[p] && !r.filled[p]) s = "Blank spot under a blank branch";
+    else s = "Blank spot under " + m.nodes[r.assign[p]].main;
+    if (m.nodes[p].seq) s += ", step " + (n.idx + 1);
+    return s;
+  }
+  function rowEl(m, r, pos, mode) {
+    var n = m.nodes[pos];
+    var row = el("div", "row" + (n.kids.length ? " br" : ""));
+    row.setAttribute("data-pos", pos);
+    if (m.nodes[n.parent].seq) row.append(el("span", "num", String(n.idx + 1)));
+    var isTab = n.depth === 1;
+    if (mode === "play" && r.blank[pos] && !r.filled[pos]) {
+      var b = el("button", "slot" + (isTab ? " tabslot" : ""));
+      b.type = "button"; b.setAttribute("data-pos", pos); b.setAttribute("aria-label", slotLabel(m, r, pos));
+      row.append(b);
+    } else {
+      var shown = mode === "play" ? m.nodes[r.assign[pos]] : n;
+      row.append(labelEl(shown, isTab, mode === "play" && r.blank[pos]));
+    }
+    return row;
+  }
+  function noteEl(m, r, pos, mode, host) {
+    var note = m.notes && m.notes[m.nodes[pos].main];
+    if (!note) return;
+    if (mode === "play" && r.blank[pos]) return;
+    host.append(el("p", "note", mode === "play" ? note.play : note.study));
+  }
+  function kidsEl(m, r, pos, mode) {
+    var ol = el("ol", "kids");
+    m.nodes[pos].kids.forEach(function (k) {
+      var li = el("li");
+      li.append(rowEl(m, r, k, mode));
+      noteEl(m, r, k, mode, li);
+      if (m.nodes[k].kids.length) li.append(kidsEl(m, r, k, mode));
+      ol.append(li);
+    });
+    return ol;
+  }
+  function buildTree(m, r, mode) {
+    var top = m.nodes[0].kids;
+    var tree = el("div", "tree " + (top.length > 1 ? "multi" : "single"));
+    top.forEach(function (pos) {
+      var sec = el("section", "sec");
+      sec.append(rowEl(m, r, pos, mode));
+      noteEl(m, r, pos, mode, sec);
+      if (m.nodes[pos].kids.length) sec.append(kidsEl(m, r, pos, mode));
+      tree.append(sec);
+    });
+    return tree;
+  }
+  function sheetHead(m) {
+    if (!m.tag) return document.createDocumentFragment();
+    var h = el("div", "sheet-head");
+    h.append(el("p", "tagline", m.tag));
+    return h;
+  }
+
+  /* ---------------- study ---------------- */
+  function openStudy(id) {
+    var m = BY_ID[id];
+    if (!m) return;
+    studyMap = m;
+    show("study");
+    $("studyRef").textContent = "Map " + m.id + " · Study";
+    $("studyTitle").textContent = m.title;
+    var sh = $("studySheet");
+    sh.textContent = "";
+    sh.append(sheetHead(m), buildTree(m, null, "study"));
+    $("studyPlay").textContent = "Play at " + LV[store.level].name;
+    $("studyBoard").scrollTop = 0;
+    $("studyTitle").focus({ preventScroll: true });
+  }
+  $("studyBack").addEventListener("click", function () { goHome(studyMap && studyMap.id); });
+  $("studyPlay").addEventListener("click", function () { if (studyMap) openPlay(studyMap.id); });
+
+  /* ---------------- play ---------------- */
+  function openPlay(id) {
+    var m = BY_ID[id];
+    if (!m) return;
+    closeDone();
+    if (!(round && !round.done && round.mapId === id && round.level === store.level)) round = E.newRound(m, store.level, handSize());
+    curMap = m;
+    show("play");
+    renderPlay();
+    startClock();
+    $("playTitle").focus({ preventScroll: true });
+  }
+  function renderPlay() {
+    var m = curMap, r = round;
+    $("playRef").textContent = "Map " + m.id + " · Domain " + m.d;
+    $("playTitle").textContent = m.title;
+    $("playLevel").textContent = LV[r.level].name;
+    var sheet = $("sheet");
+    sheet.textContent = "";
+    sheet.append(sheetHead(m), buildTree(m, r, "play"));
+    while (r.hand.length < handSize() && r.deck.length) r.hand.push(r.deck.shift());
+    r.selected = null;
+    renderHand([]);
+    boardEl.classList.remove("arming");
+    updateStats();
+    boardEl.scrollTop = 0;
+    $("hintBtn").disabled = $("swapBtn").disabled = r.done;
+  }
+  function renderHand(added) {
+    var r = round;
+    handEl.textContent = "";
+    r.hand.forEach(function (id) {
+      var c = r.chips[id];
+      var b = el("button", "chip" + (added.indexOf(id) >= 0 ? " dealt" : ""));
+      b.type = "button"; b.draggable = false;
+      b.setAttribute("data-chip", id);
+      b.setAttribute("aria-pressed", String(r.selected === id));
+      b.append(textCol(curMap.nodes[c.node]));
+      handEl.append(b);
+    });
+    if (!r.hand.length) handEl.append(el("p", "hand-empty", "Every term is on the map."));
+  }
+  function updateStats() {
+    var r = round, total = r.chips.length, left = r.hand.length + r.deck.length, placed = total - left;
+    $("playCount").textContent = placed + "/" + total + " placed";
+    var mEl = $("playMiss");
+    mEl.textContent = r.misses + (r.misses === 1 ? " miss" : " misses") + (r.hints ? " · " + r.hints + (r.hints === 1 ? " hint" : " hints") : "");
+    mEl.classList.toggle("has", r.misses > 0);
+    $("playMeter").style.width = (total ? (100 * placed / total) : 0) + "%";
+    $("trayLeft").textContent = left + " left";
+  }
+  function chipMain(id) { return curMap.nodes[round.chips[id].node].main; }
+  function setSelected(id) {
+    if (!round) return;
+    round.selected = id;
+    handEl.querySelectorAll(".chip").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(Number(b.getAttribute("data-chip")) === id));
+    });
+    boardEl.classList.toggle("arming", id != null);
+  }
+  function slotAt(pos) { return boardEl.querySelector('.slot[data-pos="' + pos + '"]'); }
+  function fillSlot(pos) {
+    var slot = slotAt(pos);
+    if (!slot) return;
+    var lab = labelEl(curMap.nodes[round.assign[pos]], slot.classList.contains("tabslot"), true);
+    lab.classList.add("fresh");
+    slot.replaceWith(lab);
+    curMap.nodes[pos].kids.forEach(function (k) {
+      var s = slotAt(k);
+      if (s) s.setAttribute("aria-label", slotLabel(curMap, round, k));
+    });
+  }
+  function restartAnim(node, cls) {
+    node.classList.remove(cls);
+    void node.offsetWidth;
+    node.classList.add(cls);
+  }
+  function scrollToSlot(slot) {
+    var br = boardEl.getBoundingClientRect(), sr = slot.getBoundingClientRect();
+    var top = boardEl.scrollTop + (sr.top - br.top) - (br.height / 2 - sr.height / 2);
+    boardEl.scrollTo({ top: Math.max(0, top), behavior: reduceMotion() ? "auto" : "smooth" });
+  }
+  function reveal(chipId, counted) {
+    var r = round;
+    var p = E.spotFor(curMap, r, r.chips[chipId].key);
+    if (p < 0) return;
+    if (counted) { r.hints++; r.review.add(r.chips[chipId].node); updateStats(); }
+    setSelected(chipId);
+    var slot = slotAt(p);
+    if (!slot) return;
+    restartAnim(slot, "hinted");
+    clearTimeout(slot._hintTimer);
+    slot._hintTimer = setTimeout(function () { slot.classList.remove("hinted"); }, 3300);
+    scrollToSlot(slot);
+  }
+  function place(chipId, pos, opts) {
+    opts = opts || {};
+    var r = round, m = curMap;
+    if (!r || r.done) return false;
+    var slot = slotAt(pos);
+    var res = E.tryPlace(m, r, chipId, pos);
+    if (res.ok) {
+      var added = E.take(r, chipId, handSize());
+      r.selected = null;
+      fillSlot(pos);
+      renderHand(added);
+      boardEl.classList.remove("arming");
+      updateStats();
+      announce("Placed " + m.nodes[r.assign[pos]].main + ".");
+      if (E.isComplete(r)) {
+        r.done = true;
+        pauseClock();
+        $("hintBtn").disabled = $("swapBtn").disabled = true;
+        setTimeout(finishRound, reduceMotion() ? 60 : 700);
+      } else if (opts.viaKeyboard) {
+        var first = handEl.querySelector(".chip");
+        if (first) first.focus();
+      }
+      return true;
+    }
+    r.misses++;
+    r.missCount[chipId] = (r.missCount[chipId] || 0) + 1;
+    r.review.add(r.chips[chipId].node);
+    if (slot) {
+      restartAnim(slot, "missed");
+      clearTimeout(slot._missTimer);
+      slot._missTimer = setTimeout(function () { slot.classList.remove("missed"); }, 700);
+    }
+    if (!opts.fromDrag) shakeChip(chipId);
+    updateStats();
+    if (r.missCount[chipId] >= 2) {
+      reveal(chipId, false);
+      toast("Here is where “" + chipMain(chipId) + "” goes.");
+      announce("Not there. The right spot for " + chipMain(chipId) + " is now highlighted.");
+    } else {
+      toast("Not there. Try another spot.");
+      announce("Not there. Try another spot.");
+    }
+    return false;
+  }
+  function shakeChip(chipId) {
+    var c = handEl.querySelector('.chip[data-chip="' + chipId + '"]');
+    if (c) restartAnim(c, "shake");
+  }
+
+  boardEl.addEventListener("click", function (e) {
+    if (!round || round.done || view !== "play") return;
+    var row = e.target.closest(".row");
+    if (!row || !boardEl.contains(row)) return;
+    var slot = row.querySelector(":scope > .slot");
+    if (!slot) return;
+    if (round.selected == null) { toast("Pick a term from the tray first, then tap its spot."); return; }
+    place(round.selected, Number(slot.getAttribute("data-pos")), { viaKeyboard: e.detail === 0 });
+  });
+
+  $("hintBtn").addEventListener("click", function () {
+    if (!round || round.done) return;
+    var id = round.selected != null ? round.selected : round.hand[0];
+    if (id == null) return;
+    reveal(id, true);
+    toast("Hint: the highlighted spot is where “" + chipMain(id) + "” goes.");
+    announce("Hint used. The spot for " + chipMain(id) + " is highlighted.");
+  });
+  $("swapBtn").addEventListener("click", function () {
+    if (!round || round.done) return;
+    var r = round;
+    r.selected = null;
+    boardEl.classList.remove("arming");
+    if (!r.deck.length) {
+      E.shuffle(r.hand);
+      renderHand(r.hand.slice());
+      toast("These are the last terms. Shuffled them for you.");
+      return;
+    }
+    r.deck = r.deck.concat(r.hand);
+    r.hand = r.deck.splice(0, handSize());
+    renderHand(r.hand.slice());
+  });
+  var restartArmed = 0;
+  $("playRestart").addEventListener("click", function () {
+    var now = Date.now();
+    if (now - restartArmed > 3000) { restartArmed = now; toast("Tap again to start this map over."); return; }
+    restartArmed = 0;
+    cancelDrag();
+    pauseClock();
+    round = E.newRound(curMap, round.level, handSize());
+    renderPlay();
+    startClock();
+    toast("Started over.");
+  });
+  $("playBack").addEventListener("click", function () { goHome(curMap && curMap.id); });
+
+  /* ---------------- chips: tap to select, or drag ---------------- */
+  var drag = null, suppressClickUntil = 0;
+  handEl.addEventListener("click", function (e) {
+    var chip = e.target.closest(".chip");
+    if (!chip || !round || round.done) return;
+    if (performance.now() < suppressClickUntil) return;
+    var id = Number(chip.getAttribute("data-chip"));
+    setSelected(round.selected === id ? null : id);
+    if (round.selected === id) announce("Selected " + chipMain(id) + ". Now choose its spot on the map.");
+  });
+  handEl.addEventListener("contextmenu", function (e) { if (e.target.closest(".chip")) e.preventDefault(); });
+  handEl.addEventListener("pointerdown", function (e) {
+    var chip = e.target.closest(".chip");
+    if (!chip || !round || round.done) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    if (drag) cancelDrag();
+    var rect = chip.getBoundingClientRect();
+    drag = {
+      chip: chip, id: Number(chip.getAttribute("data-chip")), pid: e.pointerId,
+      x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, ox: e.clientX - rect.left, oy: e.clientY - rect.top,
+      w: rect.width, h: rect.height, touch: e.pointerType !== "mouse", active: false, over: null, raf: 0, ghost: null,
+      entered: false, px: e.clientX, py: e.clientY
+    };
+    try { chip.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+  });
+  handEl.addEventListener("pointermove", function (e) {
+    if (!drag || e.pointerId !== drag.pid) return;
+    drag.x = e.clientX; drag.y = e.clientY;
+    if (!drag.active) {
+      if (Math.hypot(drag.x - drag.x0, drag.y - drag.y0) < 8) return;
+      beginDrag();
+    }
+    e.preventDefault();
+    moveGhost();
+    hitTest();
+  });
+  handEl.addEventListener("pointerup", function (e) { endPointer(e, true); });
+  handEl.addEventListener("pointercancel", function (e) { endPointer(e, false); });
+  window.addEventListener("blur", function () { cancelDrag(); });
+
+  function beginDrag() {
+    var d = drag;
+    d.active = true;
+    var g = d.chip.cloneNode(true);
+    g.classList.remove("dealt", "shake");
+    g.classList.add("ghost");
+    g.removeAttribute("aria-pressed");
+    g.setAttribute("aria-hidden", "true");
+    g.style.width = d.w + "px";
+    document.body.append(g);
+    d.ghost = g;
+    d.chip.classList.add("lifted");
+    document.body.classList.add("dragging");
+    if (round.selected != null && round.selected !== d.id) setSelected(null);
+    d.raf = requestAnimationFrame(autoScroll);
+  }
+  function moveGhost() {
+    var d = drag;
+    var gx = d.touch ? d.x - d.w / 2 : d.x - d.ox;
+    var gy = d.touch ? d.y - d.h - 26 : d.y - d.oy;
+    d.ghost.style.transform = "translate(" + gx + "px, " + gy + "px) rotate(-2.5deg)";
+    d.px = d.x;
+    d.py = d.touch ? gy + d.h / 2 : d.y;
+  }
+  function hitTest() {
+    var d = drag, slot = null;
+    var t = document.elementFromPoint(d.px, d.py);
+    if (t && boardEl.contains(t)) {
+      var row = t.closest(".row");
+      slot = row ? row.querySelector(":scope > .slot") : null;
+    }
+    var br = boardEl.getBoundingClientRect();
+    if (d.py > br.top && d.py < br.bottom - 40) d.entered = true;
+    if (slot !== d.over) {
+      if (d.over) d.over.classList.remove("over");
+      d.over = slot;
+      if (slot) slot.classList.add("over");
+    }
+  }
+  function autoScroll() {
+    var d = drag;
+    if (!d || !d.active) return;
+    var br = boardEl.getBoundingClientRect();
+    var zone = Math.min(80, br.height / 4), v = 0;
+    if (d.py < br.top + zone) v = -Math.min(1, (br.top + zone - d.py) / zone);
+    else if (d.entered && d.py > br.bottom - zone && d.py < br.bottom + 10) v = Math.min(1, (d.py - (br.bottom - zone)) / zone);
+    if (v) {
+      var before = boardEl.scrollTop;
+      boardEl.scrollTop += v * 18;
+      if (boardEl.scrollTop !== before) hitTest();
+    }
+    d.raf = requestAnimationFrame(autoScroll);
+  }
+  function endPointer(e, isUp) {
+    if (!drag || e.pointerId !== drag.pid) return;
+    var d = drag;
+    drag = null;
+    cancelAnimationFrame(d.raf);
+    if (!d.active) return;
+    suppressClickUntil = performance.now() + 450;
+    document.body.classList.remove("dragging");
+    var target = isUp ? d.over : null;
+    if (d.over) d.over.classList.remove("over");
+    if (target && place(d.id, Number(target.getAttribute("data-pos")), { fromDrag: true })) { d.ghost.remove(); return; }
+    flyBack(d, !!target);
+  }
+  function flyBack(d, missed) {
+    var chip = handEl.querySelector('.chip[data-chip="' + d.id + '"]') || d.chip;
+    var finish = function () {
+      d.ghost.remove();
+      chip.classList.remove("lifted");
+      if (missed) restartAnim(chip, "shake");
+    };
+    if (reduceMotion() || !d.ghost.animate || !chip.isConnected) { finish(); return; }
+    var r = chip.getBoundingClientRect();
+    var a = d.ghost.animate(
+      [{ transform: d.ghost.style.transform }, { transform: "translate(" + r.left + "px, " + r.top + "px) rotate(0deg)" }],
+      { duration: 200, easing: "cubic-bezier(.3,.7,.4,1)" }
+    );
+    a.onfinish = finish;
+    a.oncancel = finish;
+  }
+  function cancelDrag() {
+    if (!drag) return;
+    var d = drag;
+    drag = null;
+    cancelAnimationFrame(d.raf);
+    if (!d.active) return;
+    document.body.classList.remove("dragging");
+    if (d.over) d.over.classList.remove("over");
+    if (d.ghost) d.ghost.remove();
+    d.chip.classList.remove("lifted");
+  }
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (drag) { cancelDrag(); return; }
+    if (view === "play" && round && round.selected != null) { setSelected(null); announce("Selection cleared."); }
+  });
+
+  /* ---------------- clock ---------------- */
+  var clockIv = 0;
+  function elapsedOf(r) { return r.elapsed + (r.runningSince != null ? performance.now() - r.runningSince : 0); }
+  function paintClock() { if (round) $("playClock").textContent = fmt(elapsedOf(round)); }
+  function startClock() {
+    if (!round || round.done) { paintClock(); return; }
+    if (round.runningSince == null) round.runningSince = performance.now();
+    clearInterval(clockIv);
+    clockIv = setInterval(paintClock, 1000);
+    paintClock();
+  }
+  function pauseClock() {
+    clearInterval(clockIv);
+    if (round && round.runningSince != null) { round.elapsed += performance.now() - round.runningSince; round.runningSince = null; }
+    paintClock();
+  }
+  document.addEventListener("visibilitychange", function () {
+    if (view !== "play" || !round || round.done) return;
+    if (document.hidden) pauseClock(); else startClock();
+  });
+
+  /* ---------------- finishing ---------------- */
+  function whereOf(m, id) {
+    var n = m.nodes[id], parts = [], p = n.parent;
+    while (p > 0) { parts.unshift(m.nodes[p].main); p = m.nodes[p].parent; }
+    var s = parts.length ? "Under " + parts.join(" › ") : "Main branch";
+    if (m.nodes[n.parent].seq) s += ", step " + (n.idx + 1);
+    return s;
+  }
+  function button(text, cls, fn) {
+    var b = el("button", cls, text);
+    b.type = "button";
+    b.addEventListener("click", fn);
+    return b;
+  }
+  function finishRound() {
+    var r = round, m = curMap;
+    if (!r || view !== "play") return;
+    var ms = Math.round(r.elapsed);
+    var total = r.chips.length;
+    var firstTry = total ? Math.round(100 * (total - r.review.size) / total) : 100;
+    var ticks = (r.misses === 0 && r.hints === 0) ? 3 : firstTry >= 85 ? 2 : 1;
+    var imp = recordBest(m.id, r.level, ticks, ms);
+
+    $("doneRef").textContent = "Map " + m.id + " · " + LV[r.level].name;
+    $("doneTitle").textContent = m.title;
+    $("stampDate").textContent = new Date().toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+    var tk = $("doneTicks");
+    tk.textContent = "";
+    tk.setAttribute("aria-label", ticks + " of 3 ticks");
+    for (var i = 0; i < 3; i++) tk.append(tickSvg("tick" + (i < ticks ? " on" : "")));
+    var st = $("doneStats");
+    st.textContent = "";
+    [["Time", fmt(ms)], ["First try", firstTry + "%"], ["Misses", String(r.misses)], ["Hints", String(r.hints)]].forEach(function (pair) {
+      var d = el("div");
+      d.append(el("dt", null, pair[0]), el("dd", null, pair[1]));
+      st.append(d);
+    });
+    var bestNow = bestOf(m.id, r.level), bestText;
+    if (imp.first) bestText = "First clear at " + LV[r.level].name + ".";
+    else if (imp.ticks || imp.time) {
+      var parts = [];
+      if (imp.ticks) parts.push(ticks + " ticks");
+      if (imp.time) parts.push("fastest time");
+      bestText = "New best: " + parts.join(" and ") + ".";
+    } else bestText = "Your best here: " + bestNow.t + (bestNow.t === 1 ? " tick" : " ticks") + ", " + fmt(bestNow.ms) + ".";
+    $("doneBest").textContent = bestText;
+
+    var rv = $("doneReview");
+    rv.textContent = "";
+    var ids = Array.from(r.review).sort(function (a, b) { return a - b; });
+    if (ids.length) {
+      rv.append(el("h3", null, ids.length === 1 ? "Review this one" : "Review these " + ids.length));
+      var ul = el("ul");
+      ids.forEach(function (id) {
+        var n = m.nodes[id], li = el("li");
+        li.append(el("b", null, n.main + (n.sub ? " (" + n.sub + ")" : "")), el("span", null, whereOf(m, id)));
+        ul.append(li);
+      });
+      rv.append(ul);
+    } else rv.append(el("p", "clean", "Every term landed first time."));
+
+    var acts = $("doneActions");
+    acts.textContent = "";
+    var next = MAPS[(MAPS.indexOf(m) + 1) % MAPS.length];
+    acts.append(button("Next map", "btn primary", function () { openPlay(next.id); }));
+    acts.append(button("Play again", "btn", function () { openPlay(m.id); }));
+    var li2 = LEVELS.indexOf(r.level);
+    if (li2 < 2) {
+      var up = LEVELS[li2 + 1];
+      acts.append(button("Play at " + LV[up].name, "btn", function () { store.level = up; saveLocal(); openPlay(m.id); }));
+    }
+    acts.append(button("All maps", "btn quiet", function () { goHome(m.id); }));
+
+    $("app").inert = true;
+    $("done").hidden = false;
+    restartAnim($("stamp"), "thunk");
+    $("doneTitle").focus({ preventScroll: true });
+    announce("Map complete. " + ticks + " of 3 ticks in " + fmt(ms) + ".");
+  }
+  function closeDone() {
+    $("done").hidden = true;
+    $("app").inert = false;
+  }
+
+  /* ---------------- messages ---------------- */
+  var toastTimer = 0;
+  function toast(msg) {
+    var t = $("toast");
+    t.textContent = msg;
+    t.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.hidden = true; }, 2600);
+  }
+  function announce(msg) {
+    var l = $("live");
+    l.textContent = "";
+    setTimeout(function () { l.textContent = msg; }, 30);
+  }
+
+  var resizeTimer = 0;
+  window.addEventListener("resize", function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      if (view !== "play" || !round || round.done || drag) return;
+      var hs = handSize(), added = [];
+      while (round.hand.length < hs && round.deck.length) { var nx = round.deck.shift(); round.hand.push(nx); added.push(nx); }
+      if (added.length) renderHand(added);
+    }, 200);
+  });
+
+  /* ---------------- keep a game in progress across page updates ---------------- */
+  function serializeRound(r) {
+    return {
+      mapId: r.mapId, level: r.level, blank: r.blank.map(Number), assign: r.assign.slice(), filled: r.filled.map(Number),
+      chips: r.chips.map(function (c) { return c.node; }), hand: r.hand.slice(), deck: r.deck.slice(),
+      misses: r.misses, hints: r.hints, missCount: Object.assign({}, r.missCount), review: Array.from(r.review),
+      elapsed: elapsedOf(r), done: r.done
+    };
+  }
+  function restoreRound(o) {
+    var m = o && BY_ID[o.mapId];
+    if (!m || LEVELS.indexOf(o.level) < 0) return null;
+    var N = m.nodes.length;
+    if (!Array.isArray(o.blank) || o.blank.length !== N || !Array.isArray(o.assign) || o.assign.length !== N) return null;
+    var chips = (o.chips || []).map(function (node, id) { return { id: id, node: node, key: m.nodes[node] ? m.nodes[node].key : "" }; });
+    if (chips.some(function (c) { return !c.key; })) return null;
+    return {
+      mapId: o.mapId, level: o.level, blank: o.blank.map(Boolean), assign: o.assign.slice(), filled: o.filled.map(Boolean),
+      chips: chips, hand: o.hand.slice(), deck: o.deck.slice(), misses: o.misses | 0, hints: o.hints | 0,
+      missCount: o.missCount || {}, review: new Set(o.review || []), elapsed: +o.elapsed || 0, runningSince: null,
+      done: !!o.done, selected: null
+    };
+  }
+  function snapshot() {
+    return { v: 1, view: view, mapId: view === "study" ? (studyMap && studyMap.id) : (curMap && curMap.id), round: round ? serializeRound(round) : null };
+  }
+  renderHome();
+  var booted = false;
+  function boot(data) {
+    if (booted) return;
+    booted = true;
+    try {
+      if (data && data.v === 1 && data.round) round = restoreRound(data.round);
+      if (data && data.view === "play" && round && !round.done && round.mapId === data.mapId) {
+        curMap = BY_ID[round.mapId];
+        show("play"); renderPlay(); startClock();
+      } else if (data && data.view === "study" && BY_ID[data.mapId]) {
+        openStudy(data.mapId);
+      } else show("home");
+    } catch (err) { round = null; show("home"); }
+    connectCloud();
+  }
+  var hot = window.claude && window.claude.hot;
+  try { if (hot && typeof hot.snapshot === "function") hot.snapshot(snapshot); } catch (err) { /* ignore */ }
+  if (hot && typeof hot.ready === "function") {
+    try { hot.ready(boot); } catch (err) { boot({}); }
+    setTimeout(function () { boot((hot && hot.data) || {}); }, 1500);
+  } else boot((hot && hot.data) || {});
+})();
+</script>
+
+</body></html>
